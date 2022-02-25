@@ -54,5 +54,6 @@ bash$ ./src/python/event.py
 More information
 
 [evdev pypi project](https://pypi.org/project/evdev/)
+
 [evdev readthedocs](https://python-evdev.readthedocs.io/en/latest/index.html)
 
