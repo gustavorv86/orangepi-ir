@@ -1,0 +1,59 @@
+#!/bin/bash
+
+SCRIPTNAME=$(basename $0)
+ROOTDIR=$(readlink -f $(dirname ${0}))
+
+showhelp() {
+	echo ""
+	echo "USAGE:"
+	echo "  ./$SCRIPTNAME                :install ir service."
+	echo "  ./$SCRIPTNAME --uninstall    :uninstall ir service."
+	echo "  ./$SCRIPTNAME [-h|--help]    :show this help and exit."
+	echo ""
+}
+
+install() {
+	echo "--- Install"
+	cp "${ROOTDIR}/ir.service" /etc/systemd/system
+	systemctl enable ir.service
+	systemctl start ir.service
+	systemctl status ir.service
+	echo "--- Done"
+}
+
+uninstall() {
+	echo "--- Uninstall"
+	if [ ! -f /etc/systemd/system/ir.service ]; then
+		echo "ERROR: ir service not installed"
+		exit 1
+	fi
+	systemctl stop ir.service
+	systemctl disable ir.service
+	rm -f /etc/systemd/system/ir.service
+	echo "--- Done"
+}
+
+main() {
+
+	if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+		showhelp
+		exit 0
+	fi
+
+	if [ "$1" == "--uninstall" ]; then
+		uninstall
+		exit 0
+	fi
+
+	if [ "$1" ]; then
+		echo "ERROR: invalid argument $1."
+		showhelp
+		exit 1
+	fi
+
+	install
+	exit 0
+}
+
+main $@
+
